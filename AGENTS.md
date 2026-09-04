@@ -204,6 +204,20 @@ mypy autocad_mcp/ --ignore-missing-imports
 pytest tests/ -v
 ```
 
-## errores 
+## errores
 
-Tu pipeline de CI/CD falló porque el código tiene múltiples violaciones de calidad detectadas por Ruff (linter) y Black (formateador). El problema principal es que en varios lugares captura excepciones genéricas con except Exception: sin especificar qué tipo de error esperas, lo que oculta bugs y hace el código difícil de depurar. Además, usas el anti-patrón try-except-pass donde ignoras silenciosamente los errores sin registrarlos, violando estándares de buenas prácticas. En autocad_mcp/core/autocad.py (líneas 543, 556, 565, 573, 581, 597) y autocad_mcp/drawings/block_plan.py (líneas 48, 50) debes reemplazar except Exception: con excepciones específicas como except (AttributeError, TypeError): y agregar logging en lugar de pass. Ejecuta black autocad_mcp/ para formatear automáticamente los 24 archivos que necesitan corrección. Una vez hagas estos cambios, el pipeline pasará sin problemas.
+### Errores corregidos (pipeline CI/CD)
+
+El pipeline de CI/CD fue corregido resolviendo los siguientes problemas:
+
+1. **`except Exception:` genéricos** → Reemplazados con excepciones específicas como `except (AttributeError, TypeError):`, `except (COMError, OSError):`, `except (COMError, RuntimeError):`
+2. **Anti-patrón `try-except-pass`** → Reemplazado `pass` por `logger.debug()` con logging configurado (`import logging; logger = logging.getLogger(__name__)`)
+3. **Formateo Black** → Ejecutado `black autocad_mcp/` para formatear los 24 archivos que necesitaban corrección
+4. **Import ordering** → Corregido el orden de imports en `autocad_mcp/core/autocad.py` y `autocad_mcp/drawings/block_plan.py`
+
+Archivos modificados:
+- `autocad_mcp/core/autocad.py` — Todos los `except Exception:` reemplazados, agregado `logging`
+- `autocad_mcp/drawings/block_plan.py` — `except Exception:` reemplazados, agregado `logging`
+- Todos los archivos formateados con `black`
+
+El pipeline ahora pasa sin problemas.
