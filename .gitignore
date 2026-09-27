@@ -6,8 +6,10 @@ __pycache__/
 .venv/
 venv/
 .env
+autocad_agent/.env.local
 .idea/
-.vscode/
+.vscode/*
+!.vscode/tasks.json
 *.swp
 *.swo
 *~
@@ -15,10 +17,11 @@ venv/
 .DS_Store
 Thumbs.db
 autocad_screen.png
+autocad_palette/bin/
+autocad_palette/obj/
 *.dwl
 *.dwl2
 nul
-scripts/
 _check_state*.py
 _find_solapa*.py
 _regen_lotes.py

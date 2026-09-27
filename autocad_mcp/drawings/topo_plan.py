@@ -140,7 +140,6 @@ class TopoPlan(BasePlan):
             d = self._dist(x, y, xn, yn)
             rows.append((f"V{i+1}", f"{x:.3f}", f"{y:.3f}", f"{d:.3f}", f"N{i*45:d}E"))
         rows.append(("", "", "", "", ""))
-        nr = len(rows)
         th = 0.35
         tw = 10.0
         for i, r in enumerate(rows):

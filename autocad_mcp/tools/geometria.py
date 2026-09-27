@@ -1,22 +1,9 @@
 from __future__ import annotations
 
-from typing import Iterable
-
 from mcp.server.fastmcp import FastMCP
 
-from autocad_mcp.core.autocad import AutoCADConnection, AutoCADError
-from autocad_mcp.models import Point2D
-
-
-def _to_points(puntos: Iterable[dict | tuple]) -> list[Point2D]:
-    normalizados: list[Point2D] = []
-    for punto in puntos:
-        if isinstance(punto, dict):
-            normalizados.append(Point2D(float(punto["x"]), float(punto["y"])))
-        else:
-            x, y = punto
-            normalizados.append(Point2D(float(x), float(y)))
-    return normalizados
+from autocad_mcp.application import GeometryService
+from autocad_mcp.tools._common import connected
 
 
 def register_tools(mcp: FastMCP) -> None:
@@ -29,17 +16,11 @@ def register_tools(mcp: FastMCP) -> None:
         capa: str | None = None,
         color: int | None = None,
     ) -> dict:
-        try:
-            conn = AutoCADConnection.get_instance()
-            conn.connect()
-            result = conn.add_line(x1, y1, x2, y2, layer=capa)
-            if color is not None:
-                conn.set_last_entity_props(color=color)
-            elif capa:
-                conn.set_last_entity_props(layer=capa, color=256)
-            return {"ok": True, "data": result}
-        except AutoCADError as exc:
-            return {"ok": False, "error": str(exc)}
+        return connected(
+            lambda conn: GeometryService(conn).create_line(
+                x1, y1, x2, y2, layer=capa, color=color
+            )
+        )
 
     @mcp.tool(name="crear_circulo")
     def tool_crear_circulo(
@@ -49,17 +30,11 @@ def register_tools(mcp: FastMCP) -> None:
         capa: str | None = None,
         color: int | None = None,
     ) -> dict:
-        try:
-            conn = AutoCADConnection.get_instance()
-            conn.connect()
-            result = conn.add_circle(x, y, radio, layer=capa)
-            if color is not None:
-                conn.set_last_entity_props(color=color)
-            elif capa:
-                conn.set_last_entity_props(layer=capa, color=256)
-            return {"ok": True, "data": result}
-        except AutoCADError as exc:
-            return {"ok": False, "error": str(exc)}
+        return connected(
+            lambda conn: GeometryService(conn).create_circle(
+                x, y, radio, layer=capa, color=color
+            )
+        )
 
     @mcp.tool(name="crear_polilinea")
     def tool_crear_polilinea(
@@ -68,45 +43,28 @@ def register_tools(mcp: FastMCP) -> None:
         capa: str | None = None,
         color: int | None = None,
     ) -> dict:
-        try:
-            conn = AutoCADConnection.get_instance()
-            conn.connect()
-            result = conn.add_polyline(_to_points(puntos), cerrar=cerrar, layer=capa)
-            if color is not None:
-                conn.set_last_entity_props(color=color)
-            elif capa:
-                conn.set_last_entity_props(layer=capa, color=256)
-            return {"ok": True, "data": result}
-        except AutoCADError as exc:
-            return {"ok": False, "error": str(exc)}
+        return connected(
+            lambda conn: GeometryService(conn).create_polyline(
+                puntos, cerrar=cerrar, layer=capa, color=color
+            )
+        )
 
     @mcp.tool(name="crear_poligono")
     def tool_crear_poligono(
         puntos: list, capa: str = "", color: int | None = None
     ) -> dict:
-        try:
-            conn = AutoCADConnection.get_instance()
-            conn.connect()
-            capa_val = capa if capa else None
-            result = conn.add_polyline(_to_points(puntos), cerrar=True, layer=capa_val)
-            if color is not None:
-                conn.set_last_entity_props(color=color)
-            elif capa:
-                conn.set_last_entity_props(layer=capa, color=256)
-            return {"ok": True, "data": result}
-        except AutoCADError as exc:
-            return {"ok": False, "error": str(exc)}
+        return connected(
+            lambda conn: GeometryService(conn).create_polygon(
+                puntos, layer=capa or None, color=color
+            )
+        )
 
     @mcp.tool(name="insertar_texto")
     def tool_insertar_texto(
         texto: str, x: float, y: float, altura: float = 2.5, rotacion: float = 0.0
     ) -> dict:
-        try:
-            conn = AutoCADConnection.get_instance()
-            conn.connect()
-            return {
-                "ok": True,
-                "data": conn.add_text(texto, x, y, altura, rotacion=rotacion),
-            }
-        except AutoCADError as exc:
-            return {"ok": False, "error": str(exc)}
+        return connected(
+            lambda conn: GeometryService(conn).insert_text(
+                texto, x, y, altura, rotacion=rotacion
+            )
+        )

@@ -7,13 +7,13 @@ import re
 import subprocess
 import time
 import winreg
-from typing import Any
-from pythoncom import COMError
+from typing import Any, ClassVar
 
 import pythoncom
-from win32com.client import GetActiveObject, VARIANT
+from pywintypes import com_error as COMError
+from win32com.client import VARIANT, GetActiveObject
 
-from autocad_mcp.core.language import translate_cmd, is_spanish
+from autocad_mcp.core.language import translate_cmd
 from autocad_mcp.models import Point2D
 
 logger = logging.getLogger(__name__)
@@ -120,13 +120,12 @@ class AutoCADConnection:
         pythoncom.CoInitialize()
         if autolaunch is None:
             autolaunch = AUTOCAD_AUTOLAUNCH_DEFAULT
-        last_error: Exception | None = None
         for candidate in (*AUTOCAD_PROG_IDS, *AUTOCAD_CLSIDS):
             try:
                 self._app = GetActiveObject(candidate)
                 break
-            except (COMError, OSError) as exc:
-                last_error = exc
+            except (COMError, OSError):
+                logger.debug("AutoCAD COM candidate not available: %s", candidate)
         else:
             if autolaunch:
                 self._abrir_autocad_automatizado()
@@ -314,7 +313,7 @@ class AutoCADConnection:
                 float(escala),
                 math.radians(float(rotacion)),
             )
-        except (COMError, RuntimeError) as exc:
+        except (COMError, RuntimeError):
             self._importar_bloque_libreria(nombre)
             try:
                 entidad = self.model_space.InsertBlock(
@@ -766,7 +765,7 @@ class AutoCADConnection:
             "color": color or 256,
         }
 
-    ENTITY_TYPE_MAP: dict[str, str] = {
+    ENTITY_TYPE_MAP: ClassVar[dict[str, str]] = {
         "linea": "AcDbLine",
         "line": "AcDbLine",
         "circulo": "AcDbCircle",

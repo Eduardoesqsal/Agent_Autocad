@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
 
-from autocad_mcp.drawings import BlockPlan
 from autocad_mcp.core.autocad import AutoCADError
+from autocad_mcp.drawings import BlockPlan
 
 
 def register_tools(mcp: FastMCP) -> None:

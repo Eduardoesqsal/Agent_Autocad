@@ -4,18 +4,13 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
-from autocad_mcp.core.autocad import AutoCADConnection, AutoCADError
+from autocad_mcp.tools._common import connected, run_tool
 
 
 def register_tools(mcp: FastMCP) -> None:
     @mcp.tool(name="obtener_bloques")
     def tool_obtener_bloques() -> dict:
-        try:
-            conn = AutoCADConnection.get_instance()
-            conn.connect()
-            return {"ok": True, "data": conn.list_blocks()}
-        except AutoCADError as exc:
-            return {"ok": False, "error": str(exc)}
+        return connected(lambda conn: conn.list_blocks())
 
     @mcp.tool(name="insertar_bloque")
     def tool_insertar_bloque(
@@ -26,11 +21,9 @@ def register_tools(mcp: FastMCP) -> None:
         rotacion: float = 0.0,
         capa: str | None = None,
     ) -> dict[str, Any]:
-        try:
-            conn = AutoCADConnection.get_instance()
-            conn.connect()
+        def insert(conn):
             result = conn.insert_block(nombre, x, y, escala, rotacion, layer=capa)
             conn.zoom_extents()
             return {"ok": True, "data": result}
-        except AutoCADError as exc:
-            return {"ok": False, "error": str(exc)}
+
+        return run_tool(insert)
