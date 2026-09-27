@@ -138,7 +138,9 @@ class TopoPlan(BasePlan):
             x, y = TERRENO[i]
             xn, yn = TERRENO[(i + 1) % n]
             d = self._dist(x, y, xn, yn)
-            rows.append((f"V{i+1}", f"{x:.3f}", f"{y:.3f}", f"{d:.3f}", f"N{i*45:d}E"))
+            rows.append(
+                (f"V{i + 1}", f"{x:.3f}", f"{y:.3f}", f"{d:.3f}", f"N{i * 45:d}E")
+            )
         rows.append(("", "", "", "", ""))
         th = 0.35
         tw = 10.0
@@ -287,7 +289,7 @@ class TopoPlan(BasePlan):
         for i in range(n):
             vx, vy = pts_terreno[i]
             self._c(vx, vy, 0.15, "TOPO-VERTICE")
-            self._t(f"V{i+1}", vx + 0.3, vy + 0.2, "TOPO-VERTICE")
+            self._t(f"V{i + 1}", vx + 0.3, vy + 0.2, "TOPO-VERTICE")
 
         self._t("PLANO TOPOGRAFICO PLANIMETRICO", ox + 22, oy + 12.5, "TOPO-ROTULO")
 

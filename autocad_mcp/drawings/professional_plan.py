@@ -308,7 +308,7 @@ class ProfessionalPlan(BasePlan):
             xs = sx + i * seg_w
             self._r(xs, sy, xs + seg_w, sy + 0.4, "A-ESCALA" if i % 2 == 0 else "A-DIM")
         self._t("0", sx - 0.2, sy - 0.3, "A-ESCALA", 0.06)
-        self._t("4m", sx + sw - 0.1, sy - 0.3, "A-ESCALA", 0.06)  # noqa: F821
+        self._t("4m", sx + segs * seg_w - 0.1, sy - 0.3, "A-ESCALA", 0.06)
         self._t("ESCALA GRAFICA 1:50", sx + 0.5, sy + 0.6, "A-ESCALA", 0.08)
 
         self._t(

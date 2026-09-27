@@ -11,4 +11,3 @@ DEFAULT_LAYERS = {
     "RETICULA": 8,
     "NOTAS": 6,
 }
-

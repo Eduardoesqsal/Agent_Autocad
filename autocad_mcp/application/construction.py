@@ -148,9 +148,7 @@ class ConstructionTableService:
         has_col = isinstance(colindantes, list) and len(colindantes) >= rows
         h = altura_texto
 
-        dists = [
-            distance(*vertices[i], *vertices[(i + 1) % rows]) for i in range(rows)
-        ]
+        dists = [distance(*vertices[i], *vertices[(i + 1) % rows]) for i in range(rows)]
         labels = [f"P{i + 1}" for i in range(rows)]
         x_strs = [f"{vx:.3f}" for vx, _ in vertices]
         y_strs = [f"{vy:.3f}" for _, vy in vertices]
@@ -238,4 +236,3 @@ class ConstructionTableService:
                 "perimetro": round(perim_val, 3),
             }
         ]
-

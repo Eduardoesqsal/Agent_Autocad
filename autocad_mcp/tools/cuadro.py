@@ -22,7 +22,9 @@ def register_tools(mcp: FastMCP) -> None:
 
     @mcp.tool(name="cuadro_curvas")
     def tool_cuadro_curvas() -> dict:
-        return run_tool(lambda conn: ConstructionTableService(conn).create_curve_table())
+        return run_tool(
+            lambda conn: ConstructionTableService(conn).create_curve_table()
+        )
 
     @mcp.tool(name="reticula_utm")
     def tool_reticula_utm(espaciado: float, tamanio_cruz: float | None = None) -> dict:
@@ -31,4 +33,3 @@ def register_tools(mcp: FastMCP) -> None:
                 espaciado, tamanio_cruz
             )
         )
-

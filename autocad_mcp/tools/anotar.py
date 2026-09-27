@@ -23,4 +23,3 @@ def register_tools(mcp: FastMCP) -> None:
                 colindantes, capa, altura, separacion
             )
         )
-

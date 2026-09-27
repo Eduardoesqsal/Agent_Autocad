@@ -65,7 +65,7 @@ class AutoCADConnection:
         clave = rf"CLSID\\{AUTOCAD_CLSID}\\LocalServer32"
         try:
             with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, clave) as handle:
-                valor, _ = winreg.QueryValueEx(handle, None)
+                valor, _ = winreg.QueryValueEx(handle, "")
         except OSError:
             return None
         valor = str(valor).strip()

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autocad-mcp"
+version = "0.1.0"
+description = "MCP server for controlling AutoCAD through COM automation."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.0.0,<2.0.0",
+    "pywin32>=306; platform_system == 'Windows'",
+]
+
+[project.scripts]
+autocad-mcp = "autocad_mcp.server:main"
+
+[tool.setuptools.packages.find]
+include = ["autocad_mcp*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true

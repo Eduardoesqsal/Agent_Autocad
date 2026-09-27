@@ -44,8 +44,13 @@ jobs:
           mypy autocad_mcp/ --ignore-missing-imports
 
       - name: Run tests
+        shell: pwsh
         run: |
-          pytest tests/ -v || echo "No tests found or tests failed"
+          if (Test-Path tests) {
+            pytest tests/ -v
+          } else {
+            Write-Host "No tests directory found; skipping pytest."
+          }
 
       - name: Validate project structure
         run: |

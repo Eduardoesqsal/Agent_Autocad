@@ -24,4 +24,3 @@ def run_tool(action: Callable[[AutoCADConnection], dict[str, Any]]) -> dict[str,
         return action(conn)
     except AutoCADError as exc:
         return {"ok": False, "error": str(exc)}
-

@@ -12,7 +12,9 @@ class GeometryService:
         self._conn = conn
 
     @staticmethod
-    def to_points(puntos: Iterable[dict[str, Any] | tuple[float, float]]) -> list[Point2D]:
+    def to_points(
+        puntos: Iterable[dict[str, Any] | tuple[float, float]],
+    ) -> list[Point2D]:
         normalizados: list[Point2D] = []
         for punto in puntos:
             if isinstance(punto, dict):
@@ -84,4 +86,3 @@ class GeometryService:
             self._conn.set_last_entity_props(color=color)
         elif layer:
             self._conn.set_last_entity_props(layer=layer, color=256)
-

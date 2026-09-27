@@ -51,7 +51,10 @@ class AnnotationService:
         poly_handle, vertices = self._last_polyline_vertices()
 
         if len(vertices) < 3:
-            return {"ok": False, "error": "La polilinea debe tener al menos 3 vertices."}
+            return {
+                "ok": False,
+                "error": "La polilinea debe tener al menos 3 vertices.",
+            }
 
         segments = len(vertices) - 1
         if len(colindantes) != segments:
@@ -64,8 +67,7 @@ class AnnotationService:
             }
 
         signed_area = sum(
-            vertices[i][0] * vertices[i + 1][1]
-            - vertices[i + 1][0] * vertices[i][1]
+            vertices[i][0] * vertices[i + 1][1] - vertices[i + 1][0] * vertices[i][1]
             for i in range(segments)
         )
         clockwise = signed_area < 0
@@ -76,9 +78,7 @@ class AnnotationService:
             x2, y2 = vertices[i + 1]
             mx, my = midpoint(x1, y1, x2, y2)
             rot = angle(x1, y1, x2, y2)
-            ox, oy = perpendicular_offset(
-                x1, y1, x2, y2, separacion, outward=clockwise
-            )
+            ox, oy = perpendicular_offset(x1, y1, x2, y2, separacion, outward=clockwise)
             result = self._conn.add_text(
                 str(colindantes[i]),
                 mx + ox,
@@ -159,4 +159,3 @@ class AnnotationService:
             if "AcDbPolyline" in obj_name or "AcDb3dPolyline" in obj_name:
                 return str(getattr(ent, "Handle", "")), get_polyline_vertices(ent)
         raise AutoCADError("No se encontro ninguna polilinea en el dibujo.")
-
